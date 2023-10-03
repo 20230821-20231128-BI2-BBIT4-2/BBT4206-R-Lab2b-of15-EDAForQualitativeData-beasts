@@ -287,6 +287,7 @@ kable_theme <- function(dat, caption) {
 }
 
 # STEP 3. Load the Dataset ----
+library(readr)
 student_performance_dataset <-
   read_csv("data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset.CSV",
            col_types =
