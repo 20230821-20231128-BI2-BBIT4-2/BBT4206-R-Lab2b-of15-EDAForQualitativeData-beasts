@@ -11,6 +11,7 @@ output:
     df_print: default
 editor_options:
   chunk_output_type: console
+always_allow_html: true
 ---
 
 # Student Details
@@ -18,17 +19,17 @@ editor_options:
 +---------------------------------------------------+------------------------------------------------------------------------------------------------------+
 | **Student ID Numbers and Names of Group Members** | *\<list one student name, group, and ID per line; you should be between 2 and 5 members per group\>* |
 |                                                   |                                                                                                      |
-|                                                   | 1.  ID - Group - Name                                                                                |
+|                                                   | 1.  119630 - A - Venus Karanja                                                                       |
 |                                                   |                                                                                                      |
-|                                                   | 2.  ID - Group - Name                                                                                |
+|                                                   | 2.  131038 - A - Doreen Muema                                                                        |
 |                                                   |                                                                                                      |
-|                                                   | 3.  ID - Group - Name                                                                                |
+|                                                   | 3.  135844 -A - Mercy Macharia                                                                       |
 |                                                   |                                                                                                      |
-|                                                   | 4.  ID - Group - Name                                                                                |
+|                                                   | 4.  104135 - B - Ryan Shuma                                                                          |
 |                                                   |                                                                                                      |
-|                                                   | 5.  ID - Group - Name                                                                                |
+|                                                   | 5.  ID - Group - Bill Akide                                                                          |
 +---------------------------------------------------+------------------------------------------------------------------------------------------------------+
-| **GitHub Classroom Group Name**                   |                                                                                                      |
+| **GitHub Classroom Group Name**                   | BEASTS                                                                                               |
 +---------------------------------------------------+------------------------------------------------------------------------------------------------------+
 | **Course Code**                                   | BBT4206                                                                                              |
 +---------------------------------------------------+------------------------------------------------------------------------------------------------------+
@@ -66,40 +67,531 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, eval = TRUE,
 > editor_options:\
 > chunk_output_type: console
 
-# \<Provide an Appropriate Title Here\>
+# Customize the Visualizations, Tables, and Colour Scheme
 
-Describe the code chunk here:
+## purple-grey colour scheme
 
-```{r Your Second Code Chunk}
-# Fill this with R related code that will be executed when the R markdown file
-# is rendered using knitR
-library(readr)
+```{r Your 2 Code Chunk}
+# Purple Grey Color Schemes
+purple_grey_colours_11 <- c("#E2B6CE", "#B9BCC2", "#888A8E", "#582340", "#E4E0C8",
+                            "#D1B0E0", "#B191C9", "#A27DAF", "#8D6CAB", "#7B5E9A",
+                            "#6A5290")
+
+purple_grey_colours_6 <- c("#E2B6CE", "#B9BCC2", "#888A8E", "#A27DAF", "#8D6CAB", "#7B5E9A")
+
+purple_grey_colours_4 <- c("#E2B6CE", "#B9BCC2", "#A27DAF", "#6A5290")
+
+purple_grey_colours_2 <- c("#E2B6CE", "#6A5290")
+
+purple_grey_colours_1 <- c("#E2B6CE")
+
+
 ```
 
-Describe the next code chunk here:
+## Custom theme for visualizations
 
-```{r Your Third Code Chunk}
-# Fill this with other R related code that will be executed when the R markdown
-# file is rendered using knitR
-library(readr)
+```{r Your 3 Code Chunk}
+purple_grey_theme <- function() {
+  theme(
+    axis.ticks = element_line(
+      linewidth = 1, linetype = "dashed",
+      lineend = NULL, color = "#582340"),  
+    axis.text = element_text(
+      face = "bold", color = "#582340",
+      size = 12, hjust = 0.5),
+    axis.title = element_text(face = "bold", color = "#582340",
+      size = 14, hjust = 0.5),
+    plot.title = element_text(face = "bold", color = "#582340",
+      size = 16, hjust = 0.5),
+    panel.grid = element_line(
+      linewidth = 0.1, linetype = "dashed",
+      lineend = NULL, color = "#582340"),
+    panel.background = element_rect(fill = "#E4E1C8"), 
+    legend.title = element_text(face = "plain", color = "#582340",
+      size = 12, hjust = 0),
+    legend.position = "right"
+  )
+}
+
 ```
 
-## \<You Can Have a Sub-Title Here\>
+## Table Scheme
 
-```{r Your Fourth Code Chunk}
-# Fill this with other R related code that will be executed when the R markdown
-# file is rendered using knitR
-library(readr)
+```{r Your 4 Code Chunk}
+kable_theme <- function(dat, caption) {
+  kable(dat, "html", escape = FALSE, caption = caption) %>%
+    kable_styling(bootstrap_options = c("striped", "condensed", "bordered"),
+                  full_width = FALSE)
+}
 ```
 
-# \<You can Provide Another Appropriate Title Here\>
+# Load the Dataset
 
-Describe the code chunk here:
-
-```{r Your Fifth Code Chunk}
-# Fill this with R related code that will be executed when the R markdown file
-# is rendered using knitR
+```{r Your 5 Code Chunk}
 library(readr)
+student_performance_dataset <-
+  read_csv("data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset.CSV",
+           col_types =
+             cols(
+               class_group = col_factor(levels = c("A", "B", "C")),
+               gender = col_factor(levels = c("1", "0")),
+               YOB = col_date(format = "%Y"),
+               regret_choosing_bi = col_factor(levels = c("1", "0")),
+               drop_bi_now = col_factor(levels = c("1", "0")),
+               motivator = col_factor(levels = c("1", "0")),
+               read_content_before_lecture =
+                 col_factor(levels = c("1", "2", "3", "4", "5")),
+               anticipate_test_questions =
+                 col_factor(levels = c("1", "2", "3", "4", "5")),
+               answer_rhetorical_questions =
+                 col_factor(levels = c("1", "2", "3", "4", "5")),
+               find_terms_I_do_not_know =
+                 col_factor(levels = c("1", "2", "3", "4", "5")),
+               copy_new_terms_in_reading_notebook =
+                 col_factor(levels = c("1", "2", "3", "4", "5")),
+               take_quizzes_and_use_results =
+                 col_factor(levels = c("1", "2", "3", "4", "5")),
+               reorganise_course_outline =
+                 col_factor(levels = c("1", "2", "3", "4", "5")),
+               write_down_important_points =
+                 col_factor(levels = c("1", "2", "3", "4", "5")),
+               space_out_revision =
+                 col_factor(levels = c("1", "2", "3", "4", "5")),
+               studying_in_study_group =
+                 col_factor(levels = c("1", "2", "3", "4", "5")),
+               schedule_appointments =
+                 col_factor(levels = c("1", "2", "3", "4", "5")),
+               goal_oriented = col_factor(levels = c("1", "0")),
+               spaced_repetition =
+                 col_factor(levels = c("1", "2", "3", "4")),
+               testing_and_active_recall =
+                 col_factor(levels = c("1", "2", "3", "4")),
+               interleaving = col_factor(levels = c("1", "2", "3", "4")),
+               categorizing = col_factor(levels = c("1", "2", "3", "4")),
+               retrospective_timetable =
+                 col_factor(levels = c("1", "2", "3", "4")),
+               cornell_notes = col_factor(levels = c("1", "2", "3", "4")),
+               sq3r = col_factor(levels = c("1", "2", "3", "4")),
+               commute = col_factor(levels = c("1", "2", "3", "4")),
+               study_time = col_factor(levels = c("1", "2", "3", "4")),
+               repeats_since_Y1 = col_integer(),
+               paid_tuition = col_factor(levels = c("0", "1")),
+               free_tuition = col_factor(levels = c("0", "1")),
+               extra_curricular = col_factor(levels = c("0", "1")),
+               sports_extra_curricular = col_factor(levels = c("0", "1")),
+               exercise_per_week = col_factor(levels = c("0", "1", "2", "3")),
+               meditate = col_factor(levels = c("0", "1", "2", "3")),
+               pray = col_factor(levels = c("0", "1", "2", "3")),
+               internet = col_factor(levels = c("0", "1")),
+               laptop = col_factor(levels = c("0", "1")),
+               family_relationships =
+                 col_factor(levels = c("1", "2", "3", "4", "5")),
+               friendships = col_factor(levels = c("1", "2", "3", "4", "5")),
+               romantic_relationships =
+                 col_factor(levels = c("0", "1", "2", "3", "4")),
+               spiritual_wellnes =
+                 col_factor(levels = c("1", "2", "3", "4", "5")),
+               financial_wellness =
+                 col_factor(levels = c("1", "2", "3", "4", "5")),
+               health = col_factor(levels = c("1", "2", "3", "4", "5")),
+               day_out = col_factor(levels = c("0", "1", "2", "3")),
+               night_out = col_factor(levels = c("0", "1", "2", "3")),
+               alcohol_or_narcotics =
+                 col_factor(levels = c("0", "1", "2", "3")),
+               mentor = col_factor(levels = c("0", "1")),
+               mentor_meetings = col_factor(levels = c("0", "1", "2", "3")),
+               `Attendance Waiver Granted: 1 = Yes, 0 = No` =
+                 col_factor(levels = c("0", "1")),
+               GRADE = col_factor(levels = c("A", "B", "C", "D", "E"))),
+           locale = locale())
+
+View(student_performance_dataset)
+
 ```
 
-**etc.** as per the lab submission requirements.
+# Create a subset of the data
+
+```{r Your 6 Code Chunk}
+library(dplyr)
+evaluation_per_group_per_gender <- student_performance_dataset %>%
+  mutate(`Student's Gender` =
+           ifelse(gender == 1, "Male", "Female")) %>%
+  select(class_group, gender,
+         `Student's Gender`, `Average Level of Learning Attained Rating`) %>%
+  filter(!is.na(`Average Level of Learning Attained Rating`)) %>%
+  group_by(class_group, `Student's Gender`) %>%
+  summarise(average_learning_rating =
+              mean(`Average Level of Learning Attained Rating`, na.rm = TRUE)) %>%
+  arrange(class_group, `Student's Gender`) %>%
+  arrange(desc(average_learning_rating), .by_group = TRUE)
+
+# Print the resulting data frame
+#print(evaluation_per_group_per_gender)
+
+# If you want a tabular output in the RStudio viewer, you can use:
+View(evaluation_per_group_per_gender)
+
+```
+
+# Decorated tabular output
+
+```{r Your 7 Code Chunk}
+library(dplyr)
+library(kableExtra)
+
+evaluation_per_group_per_gender %>%
+  rename(`class_group` = class_group) %>%
+  rename(`Average Level of Learning Attained Rating` = average_learning_rating) %>%
+  select(`class_group`, `Student's Gender`, `Average Level of Learning Attained Rating`) %>%
+  mutate(`Average Level of Learning Attained Rating` =
+           cell_spec(`Average Level of Learning Attained Rating`,
+                     color = ifelse(`Average Level of Learning Attained Rating` >= 70, "green", "red"))) %>%
+  kable("html", escape = FALSE, align = "c",
+        caption = "Course Evaluation Rating per Group and per Gender") %>%
+  kable_styling(bootstrap_options = c("striped", "condensed", "bordered"),
+                full_width = FALSE) %>%
+  column_spec(3, background = "#E2B6CE")
+
+
+```
+
+# Decorated visual bar chart
+
+```{r Your 8 Code Chunk}
+library(ggplot2)
+evaluation_per_group_per_gender %>%
+  ggplot() +
+  geom_bar(aes(x = class_group, y = average_learning_rating,
+               fill = `Student's Gender`),
+           stat = "identity", position = "dodge") +
+  expand_limits(y = 0) +
+  purple_grey_theme() +
+  scale_fill_manual(values = purple_grey_colours_4) +
+  ggtitle("Course Evaluation Learning Rating per Group and per Gender") +
+  labs(x = "Class Group", y = "Average Rating")
+```
+
+# Data Cleansing for Qualitative Data Contractions
+
+```{r Your 9 Code Chunk}
+#function for removing spectical characters
+remove_special_characters <- function(doc) {
+  gsub("[^a-zA-Z]+", " ", doc, ignore.case = TRUE)
+}
+#function for contractions 
+expand_contractions <- function(doc) {
+  doc <- gsub("It's", "it is", doc, ignore.case = TRUE)
+  doc <- gsub("I'm", "I am", doc, ignore.case = TRUE)
+  doc <- gsub("Don't", "do not", doc, ignore.case = TRUE)
+  doc <- gsub("I've", "I have", doc, ignore.case = TRUE)
+  doc <- gsub("Isn't", "is not", doc, ignore.case = TRUE)
+  doc <- gsub("We're", " we are", doc, ignore.case = TRUE)
+  doc <- gsub("That's", " that is", doc, ignore.case = TRUE)
+  doc <- gsub("you're", "you are", doc, ignore.case = TRUE)
+  doc <- gsub("he's", "he is", doc, ignore.case = TRUE)
+  doc <- gsub("she's", "she is", doc, ignore.case = TRUE)
+  doc <- gsub("they're", "they are", doc, ignore.case = TRUE)
+  doc <- gsub("I'll", "I will", doc, ignore.case = TRUE)
+  doc <- gsub("you'll", "you will", doc, ignore.case = TRUE)
+  doc <- gsub("he'll", "he will", doc, ignore.case = TRUE)
+  doc <- gsub("she'll", "she will", doc, ignore.case = TRUE)
+  doc <- gsub("it'll", "it will", doc, ignore.case = TRUE)
+  doc <- gsub("we'll", "we will", doc, ignore.case = TRUE)
+  doc <- gsub("they'll", "they will", doc, ignore.case = TRUE)
+  doc <- gsub("won't", "will not", doc, ignore.case = TRUE)
+  doc <- gsub("can't", "cannot", doc, ignore.case = TRUE)
+  doc <- gsub("n't", " not", doc, ignore.case = TRUE)
+  doc <- gsub("it s", " it is", doc, ignore.case = TRUE)
+  doc <- gsub("its", " it is", doc, ignore.case = TRUE)
+  doc <- gsub("It’s", " it is", doc, ignore.case = TRUE)
+  return(doc)
+}
+#Evaluation likes
+evaluation_likes <- student_performance_dataset %>%
+  mutate(`Student's Gender` =
+           ifelse(gender == 1, "Male", "Female")) %>%
+  rename(`Class Group` = class_group) %>%
+  rename(Likes = `D - 1. \nWrite two things you like about the teaching and learning in this unit so far.`) %>% # nolint
+  select(`Class Group`,
+         `Student's Gender`, `Average Level of Learning Attained Rating`,
+         Likes) %>%
+  filter(!is.na(`Average Level of Learning Attained Rating`)) %>%
+  arrange(`Class Group`)
+
+#expanding contractions
+evaluation_likes$Likes <- sapply(evaluation_likes$Likes, expand_contractions) # nolint
+
+#removing special characters
+evaluation_likes$Likes <- sapply(evaluation_likes$Likes, remove_special_characters) # nolint
+
+# Convert to lowercase
+evaluation_likes <- evaluation_likes %>%
+  mutate(Likes = tolower(Likes))  
+
+#save as csv and load the dataset
+write.csv(evaluation_likes,
+          file = "data/likes_cleansed.csv",
+          row.names = FALSE)
+likes_cleansed_dataset <- read.csv("data/likes_cleansed.csv")
+
+View(evaluation_likes)
+```
+
+# Stemming/Lemmatization
+
+```{r Your 10 Code Chunk}
+library(textstem)
+lemma_likes <- make_lemma_dictionary(evaluation_likes$Likes, engine = 'lexicon')
+
+View(lemma_likes)
+
+```
+
+# Stopword Removal, Short Word Removal, and Censorship
+
+```{r Your 11 Code Chunk}
+# Load necessary libraries
+library(dplyr)
+library(tidyr)
+library(tidytext)
+library(stringr) 
+
+# Assuming you have a dataset named evaluation_likes with a column named Likes
+
+# Define a list of undesirable words to censor
+undesirable_words <- c("wow", "lol", "none", "na")
+
+# Load the stop words dataset (if not already loaded)
+data("stop_words")
+
+# Perform text preprocessing
+evaluation_likes_filtered <- evaluation_likes %>%
+  unnest_tokens(word, Likes) %>%
+  anti_join(stop_words, by = "word") %>%  # Remove stopwords
+  filter(!word %in% undesirable_words) %>%  # Censor undesirable words
+  filter(nchar(word) > 3) %>%  # Remove short words
+  distinct() %>%  # Remove duplicate words
+  rename(`Likes (tokenized)` = word)  # Rename the column
+
+# Save the filtered data as a CSV file
+write.csv(evaluation_likes_filtered,
+          file = "data/likes_filtered.csv",
+          row.names = FALSE)
+
+# Sample data
+View(evaluation_likes_filtered)
+
+```
+
+# Word Count
+
+## Word count per gender
+
+```{r Your 12 Code Chunk}
+library(dplyr)
+library(kableExtra)
+
+word_count_per_gender_likes <- evaluation_likes_filtered %>%
+  group_by(`Student's Gender`) %>%
+  summarise(num_words = n()) %>%
+  arrange(desc(num_words))
+
+# Define a function to style the cells with background color
+style_cells <- function(x) {
+  cell_spec(x, color = "black", background = ifelse(x >= 10, "#E2B6CE", "#E4E0C8"))
+}
+
+word_count_per_gender_likes %>%
+  mutate(num_words = style_cells(num_words)) %>%
+  rename(`Number of Words` = num_words) %>%
+  kable("html", escape = FALSE, align = "c",
+        caption = "Number of Significant Words in Evaluation Likes 
+                   per Gender: Minus contractions, special characters, 
+                   stopwords, short words, and censored words.") %>%
+  kable_styling(bootstrap_options =
+                  c("striped", "condensed", "bordered"),
+                full_width = FALSE)
+
+
+```
+
+## Word count per group
+
+```{r Your 13 Code Chunk}
+library(dplyr)
+library(kableExtra)
+
+word_count_per_group <- evaluation_likes_filtered %>%
+  group_by(`Class Group`) %>%
+  summarise(num_words = n()) %>%
+  arrange(desc(num_words))
+
+# Create a function to format the cell with a colored bar
+color_bar_cell <- function(x) {
+  cell_spec(x, color = "white", 
+            background = scales::col_numeric(palette = c("#E2B6CE", "#E2B6CE"), domain = NULL)(x))
+}
+
+word_count_per_group %>%
+  mutate(`Number of Words` = color_bar_cell(num_words)) %>%
+  select(-num_words) %>% 
+  kable("html", escape = FALSE, align = "c",
+        caption = "Number of Significant Words in Evaluation Likes 
+                   per Group: Minus contractions, special characters, 
+                   stopwords, short words, and censored words.") %>%
+  kable_styling(bootstrap_options =
+                  c("striped", "condensed", "bordered"),
+                full_width = FALSE)
+
+```
+
+## Top 10 words per gender
+
+```{r Your 14 Code Chunk}
+popular_words <- evaluation_likes_filtered %>%
+  group_by(`Student's Gender`) %>%
+  count(`Likes (tokenized)`, `Student's Gender`, sort = TRUE) %>%
+  slice(seq_len(10)) %>%
+  ungroup() %>%
+  arrange(`Student's Gender`, n) %>%
+  mutate(row = row_number())
+
+popular_words %>%
+  ggplot(aes(row, n, fill = `Student's Gender`)) +
+  geom_col(fill = purple_grey_colours_1) +
+  purple_grey_theme() +
+  labs(x = "Word in Course Evaluation",
+       y = "Number of Times Used (Term Frequency)") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Likes per Gender") +
+  facet_wrap(~`Student's Gender`, scales = "free") +
+  scale_x_continuous(
+                     breaks = popular_words$row,
+                     labels = popular_words$`Likes (tokenized)`) +
+  coord_flip()
+
+```
+
+## Top 10 words per group
+
+```{r Your 15 Code Chunk}
+popular_words <- evaluation_likes_filtered %>%
+  group_by(`Class Group`) %>%
+  count(`Likes (tokenized)`, `Class Group`, sort = TRUE) %>%
+  slice(seq_len(10)) %>%
+  ungroup() %>%
+  arrange(`Class Group`, n) %>%
+  mutate(row = row_number())
+
+popular_words %>%
+  ggplot(aes(row, n, fill = `Class Group`)) +
+  geom_col(fill = purple_grey_colours_1) +
+  purple_grey_theme() +
+  labs(x = "Word in Course Evaluation", y = "Number of Times Used") +
+  ggtitle("Most Frequently Used Words in Course Evaluation Likes per 
+          Class Group") +
+  facet_wrap(~`Class Group`, scales = "free") +
+  scale_x_continuous(
+                     breaks = popular_words$row,
+                     labels = popular_words$`Likes (tokenized)`) +
+  coord_flip()
+
+```
+
+# Word Cloud
+
+```{r Your 16 Code Chunk}
+library(dplyr)
+library(wordcloud2)
+
+evaluation_likes_filtered_cloud <- evaluation_likes_filtered %>% # nolint
+  count(`Likes (tokenized)`, sort = TRUE)
+
+wordcloud2(evaluation_likes_filtered_cloud, size = .6)
+```
+
+# Term Frequency - Inverse Document Frequency (TF-IDF)
+
+## TF-IDF Score per Group
+
+```{r Your 17 Code Chunk}
+library(ggplot2) 
+popular_tfidf_words_likes <- evaluation_likes_filtered %>% # nolint
+  unnest_tokens(word, `Likes (tokenized)`) %>%
+  distinct() %>%
+  filter(!word %in% undesirable_words) %>%
+  filter(nchar(word) > 3) %>%
+  rename(`Likes (tokenized)` = word) %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Level of Learning Attained Rating`, `Likes (tokenized)`) %>%
+  count(`Class Group`, `Likes (tokenized)`, sort = TRUE) %>%
+  ungroup() %>%
+  bind_tf_idf(`Likes (tokenized)`, `Class Group`, n)
+
+top_popular_tfidf_words <- popular_tfidf_words_likes %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(`Likes (tokenized)` =
+           factor(`Likes (tokenized)`,
+                  levels = rev(unique(`Likes (tokenized)`)))) %>%
+  group_by(`Class Group`) %>%
+  slice(seq_len(10)) %>%
+  ungroup() %>%
+  arrange(`Class Group`, tf_idf) %>%
+  mutate(row = row_number())
+
+top_popular_tfidf_words %>%
+  ggplot(aes(x = row, tf_idf, fill = `Class Group`)) +
+  geom_col(fill = purple_grey_colours_1) +
+  purple_grey_theme() +
+  labs(x = "Word in Course Evaluation", y = "TF-IDF Score") +
+  ggtitle("Important Words using TF-IDF by Chart Level") +
+  ggtitle("Most Important Words by TF-IDF Score in Course Evaluation Likes per 
+      Class Group") +
+  facet_wrap(~`Class Group`, scales = "free") +
+  scale_x_continuous(
+                     breaks = top_popular_tfidf_words$row,
+                     labels = top_popular_tfidf_words$`Likes (tokenized)`) +
+  coord_flip()
+```
+
+## TF-IDF Score per Gender
+
+```{r Your 18 Code Chunk}
+popular_tfidf_words_likes <- evaluation_likes_filtered %>% # nolint
+  unnest_tokens(word, `Likes (tokenized)`) %>%
+  distinct() %>%
+  filter(!word %in% undesirable_words) %>%
+  filter(nchar(word) > 3) %>%
+  rename(`Likes (tokenized)` = word) %>%
+  select(`Class Group`, `Student's Gender`,
+         `Average Level of Learning Attained Rating`, `Likes (tokenized)`) %>%
+  count(`Class Group`, `Likes (tokenized)`, sort = TRUE) %>%
+  ungroup() %>%
+  bind_tf_idf(`Likes (tokenized)`, `Class Group`, n)
+
+top_popular_tfidf_words <- popular_tfidf_words_likes %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(`Likes (tokenized)` =
+           factor(`Likes (tokenized)`,
+                  levels = rev(unique(`Likes (tokenized)`)))) %>%
+  group_by(`Class Group`) %>%
+  slice(seq_len(10)) %>%
+  ungroup() %>%
+  arrange(`Class Group`, tf_idf) %>%
+  mutate(row = row_number())
+
+top_popular_tfidf_words %>%
+  ggplot(aes(x = row, tf_idf, fill = `Class Group`)) +
+  geom_col(fill = purple_grey_colours_1) +
+  purple_grey_theme() +
+  labs(x = "Word in Course Evaluation", y = "TF-IDF Score") +
+  ggtitle("Important Words using TF-IDF by Chart Level") +
+  ggtitle("Most Important Words by TF-IDF Score in Course Evaluation Likes per 
+      Class Group") +
+  facet_wrap(~`Class Group`, scales = "free") +
+  scale_x_continuous(
+                     breaks = top_popular_tfidf_words$row,
+                     labels = top_popular_tfidf_words$`Likes (tokenized)`) +
+  coord_flip()
+
+
+```
